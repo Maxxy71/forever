@@ -1,0 +1,1111 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>3 Years, 4 Months & Forever</title>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=DM+Mono:wght@300;400&display=swap"
+    rel="stylesheet">
+  <style>
+    :root {
+      --ink: #0d0a08;
+      --cream: #f5f0e8;
+      --rust: #b84a2e;
+      --gold: #c9a84c;
+      --warm: #1a1410;
+      --muted: #8a7a6a;
+      --paper: #ede8de;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      background: var(--ink);
+      color: var(--cream);
+      font-family: 'Cormorant Garamond', serif;
+      overflow-x: hidden;
+      cursor: none;
+    }
+
+    /* CUSTOM CURSOR */
+    #cursor-dot {
+      position: fixed;
+      width: 8px;
+      height: 8px;
+      background: var(--gold);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 9999;
+      transform: translate(-50%, -50%);
+      transition: transform 0.1s;
+      mix-blend-mode: difference;
+    }
+
+    #cursor-ring {
+      position: fixed;
+      width: 36px;
+      height: 36px;
+      border: 1.5px solid var(--gold);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 9998;
+      transform: translate(-50%, -50%);
+      transition: transform 0.18s ease, width 0.2s, height 0.2s, opacity 0.2s;
+      opacity: 0.6;
+    }
+
+    /* PETALS */
+    .petal {
+      position: fixed;
+      pointer-events: none;
+      z-index: 9997;
+      font-size: 16px;
+      animation: petalFall linear forwards;
+      opacity: 0.85;
+    }
+
+    @keyframes petalFall {
+      0% {
+        transform: translateY(-20px) rotate(0deg);
+        opacity: 0.9;
+      }
+
+      100% {
+        transform: translateY(110vh) rotate(720deg);
+        opacity: 0;
+      }
+    }
+
+    .click-petal {
+      position: fixed;
+      pointer-events: none;
+      z-index: 9997;
+      animation: clickBurst 1s ease-out forwards;
+      font-size: 18px;
+    }
+
+    @keyframes clickBurst {
+      0% {
+        opacity: 1;
+        transform: translate(0, 0) scale(1);
+      }
+
+      100% {
+        opacity: 0;
+        transform: translate(var(--tx), var(--ty)) scale(0.3);
+      }
+    }
+
+    /* HERO */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+      background: var(--ink);
+    }
+
+    .hero-bg {
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse at 30% 60%, rgba(184, 74, 46, 0.18) 0%, transparent 60%),
+        radial-gradient(ellipse at 80% 20%, rgba(201, 168, 76, 0.12) 0%, transparent 50%);
+    }
+
+    .hero-noise {
+      position: absolute;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+      opacity: 0.4;
+      pointer-events: none;
+    }
+
+    .hero-line {
+      width: 1px;
+      height: 80px;
+      background: linear-gradient(to bottom, transparent, var(--gold), transparent);
+      margin: 2rem auto;
+      animation: lineGrow 2s ease forwards;
+    }
+
+    @keyframes lineGrow {
+      from {
+        height: 0;
+        opacity: 0;
+      }
+
+      to {
+        height: 80px;
+        opacity: 1;
+      }
+    }
+
+    .hero-date {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.7rem;
+      letter-spacing: 0.4em;
+      color: var(--gold);
+      text-transform: uppercase;
+      opacity: 0;
+      animation: fadeUp 1s 0.3s ease forwards;
+    }
+
+    .hero-title {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2.8rem, 8vw, 7rem);
+      font-weight: 400;
+      font-style: italic;
+      line-height: 1.1;
+      text-align: center;
+      color: var(--cream);
+      opacity: 0;
+      animation: fadeUp 1.2s 0.6s ease forwards;
+    }
+
+    .hero-title span {
+      color: var(--rust);
+    }
+
+    .hero-sub {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.1rem;
+      font-weight: 300;
+      letter-spacing: 0.12em;
+      color: var(--muted);
+      margin-top: 1.2rem;
+      opacity: 0;
+      animation: fadeUp 1s 1s ease forwards;
+    }
+
+    .scroll-hint {
+      position: absolute;
+      bottom: 2.5rem;
+      font-family: 'DM Mono', monospace;
+      font-size: 0.6rem;
+      letter-spacing: 0.3em;
+      color: var(--muted);
+      text-transform: uppercase;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+
+      0%,
+      100% {
+        opacity: 0.4
+      }
+
+      50% {
+        opacity: 1
+      }
+    }
+
+    @keyframes fadeUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* CHAPTER SECTIONS */
+    .chapter {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 6rem 2rem;
+      position: relative;
+      opacity: 0;
+      transform: translateY(60px);
+      transition: opacity 0.9s ease, transform 0.9s ease;
+    }
+
+    .chapter.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .ch-label {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.6rem;
+      letter-spacing: 0.5em;
+      color: var(--rust);
+      text-transform: uppercase;
+      margin-bottom: 0.8rem;
+      display: block;
+    }
+
+    .ch-title {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(1.8rem, 4vw, 3.2rem);
+      font-style: italic;
+      font-weight: 400;
+      color: var(--cream);
+      margin-bottom: 1rem;
+      line-height: 1.2;
+    }
+
+    .ch-text {
+      font-size: 1.05rem;
+      font-weight: 300;
+      color: var(--muted);
+      line-height: 1.9;
+      max-width: 400px;
+    }
+
+    .ch-text em {
+      color: var(--gold);
+      font-style: italic;
+    }
+
+    .divider {
+      width: 40px;
+      height: 1px;
+      background: var(--rust);
+      margin: 1.2rem 0;
+    }
+
+    /* LAYOUT TYPES */
+    .layout-split {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 5rem;
+      max-width: 1100px;
+      width: 100%;
+      align-items: center;
+    }
+
+    .layout-center {
+      max-width: 800px;
+      width: 100%;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .layout-3col {
+      max-width: 1200px;
+      width: 100%;
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 2rem;
+      align-items: start;
+    }
+
+    .layout-2col {
+      max-width: 1000px;
+      width: 100%;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 3rem;
+      align-items: start;
+    }
+
+    /* PHOTO FRAMES */
+    .photo-frame {
+      position: relative;
+      overflow: hidden;
+      border-radius: 2px;
+    }
+
+    .photo-frame img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      transition: transform 0.8s ease;
+      filter: saturate(0.85) contrast(1.05);
+    }
+
+    .photo-frame:hover img {
+      transform: scale(1.04);
+      filter: saturate(1) contrast(1.05);
+    }
+
+    .photo-frame::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to bottom, transparent 60%, rgba(13, 10, 8, 0.5));
+      pointer-events: none;
+    }
+
+    .frame-tall {
+      height: 520px;
+    }
+
+    .frame-med {
+      height: 400px;
+    }
+
+    .frame-short {
+      height: 320px;
+    }
+
+    .frame-square {
+      aspect-ratio: 1;
+    }
+
+    .frame-portrait {
+      aspect-ratio: 3/4;
+    }
+
+    /* STORY ASIDE */
+    .story-side {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    /* CHAPTER 1 - PROPOSAL */
+    .ch1-img {
+      position: relative;
+    }
+
+    .ch1-img .photo-frame {
+      height: 580px;
+      box-shadow: 30px 30px 0 rgba(184, 74, 46, 0.12);
+    }
+
+    .ch1-corner {
+      position: absolute;
+      top: -1rem;
+      right: -1rem;
+      width: 80px;
+      height: 80px;
+      border-top: 1px solid var(--gold);
+      border-right: 1px solid var(--gold);
+    }
+
+    .ch1-corner2 {
+      position: absolute;
+      bottom: -1rem;
+      left: -1rem;
+      width: 80px;
+      height: 80px;
+      border-bottom: 1px solid var(--rust);
+      border-left: 1px solid var(--rust);
+    }
+
+    /* CHAPTER 2 - FIRST DAYS */
+    .duo-photos {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+    }
+
+    .duo-photos .photo-frame:first-child {
+      margin-top: 2rem;
+    }
+
+    /* CHAPTER 6 - DIMA */
+    .dima-main {
+      grid-column: 1 / -1;
+    }
+
+    .dima-main .photo-frame {
+      height: 400px;
+    }
+
+    .dima-sub .photo-frame {
+      height: 280px;
+    }
+
+    /* CHAPTER 7 - BIRTHDAY */
+    .bday-text {
+      margin-bottom: 2rem;
+    }
+
+    /* VIDEO SECTION */
+    .video-section {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 6rem 2rem;
+      background: linear-gradient(to bottom, var(--ink), #100806, var(--ink));
+      position: relative;
+      opacity: 0;
+      transform: translateY(60px);
+      transition: opacity 0.9s ease, transform 0.9s ease;
+    }
+
+    .video-section.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .video-wrapper {
+      max-width: 1100px;
+      width: 100%;
+      display: grid;
+      grid-template-columns: 1fr 380px;
+      gap: 4rem;
+      align-items: start;
+    }
+
+    .video-container {
+      position: relative;
+    }
+
+    .video-container video {
+      width: 100%;
+      border-radius: 2px;
+      display: block;
+      box-shadow: 0 40px 80px rgba(0, 0, 0, 0.8);
+    }
+
+    .video-title-block {
+      margin-bottom: 1.5rem;
+    }
+
+    .video-label {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.6rem;
+      letter-spacing: 0.5em;
+      color: var(--rust);
+      text-transform: uppercase;
+      display: block;
+      margin-bottom: 0.6rem;
+    }
+
+    .video-heading {
+      font-family: 'Playfair Display', serif;
+      font-size: 2.4rem;
+      font-style: italic;
+      color: var(--cream);
+      line-height: 1.2;
+    }
+
+    /* LYRICS PANEL */
+    .lyrics-panel {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(201, 168, 76, 0.15);
+      border-radius: 2px;
+      height: 480px;
+      overflow-y: auto;
+      padding: 2rem 1.5rem;
+      position: relative;
+      scrollbar-width: thin;
+      scrollbar-color: var(--rust) transparent;
+    }
+
+    .lyrics-panel::-webkit-scrollbar {
+      width: 3px;
+    }
+
+    .lyrics-panel::-webkit-scrollbar-thumb {
+      background: var(--rust);
+      border-radius: 2px;
+    }
+
+    .lyrics-panel h3 {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.6rem;
+      letter-spacing: 0.4em;
+      color: var(--gold);
+      text-transform: uppercase;
+      margin-bottom: 0.4rem;
+    }
+
+    .lyrics-artist {
+      font-size: 0.75rem;
+      color: var(--muted);
+      font-family: 'DM Mono', monospace;
+      letter-spacing: 0.2em;
+      margin-bottom: 1.5rem;
+      padding-bottom: 1rem;
+      border-bottom: 1px solid rgba(201, 168, 76, 0.1);
+    }
+
+    .lyric-line {
+      font-size: 0.9rem;
+      color: rgba(245, 240, 232, 0.35);
+      line-height: 1.8;
+      margin-bottom: 0.3rem;
+      transition: color 0.4s, font-size 0.3s;
+      cursor: default;
+      font-family: 'Cormorant Garamond', serif;
+      letter-spacing: 0.03em;
+    }
+
+    .lyric-line.active {
+      color: var(--gold);
+      font-size: 1rem;
+      font-style: italic;
+    }
+
+    .lyric-section {
+      margin-bottom: 1rem;
+    }
+
+    /* CLOSING */
+    .closing {
+      min-height: 80vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 6rem 2rem;
+      position: relative;
+      opacity: 0;
+      transform: translateY(40px);
+      transition: opacity 1s ease, transform 1s ease;
+    }
+
+    .closing.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .closing-title {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2rem, 5vw, 4.5rem);
+      font-style: italic;
+      color: var(--cream);
+      margin-bottom: 1.5rem;
+    }
+
+    .closing-text {
+      font-size: 1.1rem;
+      color: var(--muted);
+      max-width: 550px;
+      line-height: 2;
+      margin: 0 auto;
+    }
+
+    .closing-heart {
+      font-size: 2rem;
+      margin: 2rem 0;
+      animation: heartbeat 1.5s infinite;
+      display: inline-block;
+      color: var(--rust);
+    }
+
+    @keyframes heartbeat {
+
+      0%,
+      100% {
+        transform: scale(1);
+      }
+
+      50% {
+        transform: scale(1.2);
+      }
+    }
+
+    .closing-sig {
+      font-family: 'Playfair Display', serif;
+      font-style: italic;
+      font-size: 1.4rem;
+      color: var(--gold);
+      margin-top: 2rem;
+    }
+
+    /* SECTION BG VARIANTS */
+    .bg-warm {
+      background: linear-gradient(135deg, #0f0c09 0%, #150e0a 100%);
+    }
+
+    .bg-cool {
+      background: linear-gradient(135deg, #0a0d10 0%, #0d0a08 100%);
+    }
+
+    .bg-rust-hint {
+      background: radial-gradient(ellipse at 70% 50%, rgba(184, 74, 46, 0.08) 0%, var(--ink) 60%);
+    }
+
+    .bg-gold-hint {
+      background: radial-gradient(ellipse at 30% 50%, rgba(201, 168, 76, 0.06) 0%, var(--ink) 60%);
+    }
+
+    /* TIMELINE DOT */
+    .timeline-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--rust);
+      margin-bottom: 1.5rem;
+      position: relative;
+    }
+
+    .timeline-dot::before {
+      content: '';
+      position: absolute;
+      top: -40px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 1px;
+      height: 40px;
+      background: linear-gradient(to bottom, transparent, var(--rust));
+    }
+
+    /* MOBILE */
+    @media (max-width: 768px) {
+      .layout-split {
+        grid-template-columns: 1fr;
+        gap: 3rem;
+      }
+
+      .layout-3col {
+        grid-template-columns: 1fr;
+      }
+
+      .layout-2col {
+        grid-template-columns: 1fr;
+      }
+
+      .duo-photos {
+        grid-template-columns: 1fr;
+      }
+
+      .video-wrapper {
+        grid-template-columns: 1fr;
+      }
+
+      .lyrics-panel {
+        height: 300px;
+      }
+
+      .frame-tall {
+        height: 380px;
+      }
+
+      .dima-main .photo-frame {
+        height: 280px;
+      }
+
+      .dima-main {
+        grid-column: auto;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- CURSOR -->
+  <div id="cursor-dot"></div>
+  <div id="cursor-ring"></div>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-bg"></div>
+    <div class="hero-noise"></div>
+    <p class="hero-date">January 10, 2023 — Forever</p>
+    <div class="hero-line"></div>
+    <h1 class="hero-title">3 Years, 4 Months<br><span>&amp; Forever</span></h1>
+    <p class="hero-sub">A letter I wrote with every memory we made</p>
+    <div class="hero-line" style="animation-delay:1.5s"></div>
+    <p class="scroll-hint">scroll to read our story ↓</p>
+  </section>
+
+  <!-- CH 1: THE PROPOSAL -->
+  <section class="chapter bg-rust-hint" id="ch1">
+    <div class="layout-split">
+      <div class="ch1-img">
+        <div class="photo-frame frame-tall">
+          <img src="1.jpeg">
+        </div>
+        <div class="ch1-corner"></div>
+        <div class="ch1-corner2"></div>
+      </div>
+      <div class="story-side">
+        <div class="timeline-dot"></div>
+        <span class="ch-label">Chapter I · January 10</span>
+        <h2 class="ch-title">The Moment I Asked</h2>
+        <div class="divider"></div>
+        <p class="ch-text">
+          On one knee, red roses in hand — the everyone was watching and I was so scared and nervous. But then seeing
+          you so beautiful and smiling.<br><br>
+          All I saw was <em>you</em>. The way you smiled before you even said yes.
+          That moment changed everything.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- CH 2: FIRST DAYS -->
+  <section class="chapter bg-cool" id="ch2">
+    <div class="layout-split" style="direction:rtl">
+      <div class="duo-photos" style="direction:ltr">
+        <div class="photo-frame frame-med">
+          <img src="2.jpeg">
+        </div>
+        <div class="photo-frame frame-med">
+          <img src="3.jpeg">
+        </div>
+      </div>
+      <div class="story-side" style="direction:ltr">
+        <div class="timeline-dot"></div>
+        <span class="ch-label">Chapter II · Our First Date</span>
+        <h2 class="ch-title">TSR Camp Park,<br>NIT — Just Us early </h2>
+        <div class="divider"></div>
+        <p class="ch-text">
+          Love had been there long before —<br>
+          quietly, patiently, waiting as I felt it inside.<br><br>
+          But it was <em>this</em> walk through TSR camp park that made it really possible for me to turely start
+          falling for you and understand my feelings for you.
+          It was our first outing together, our first real moment as a couple
+          exploring, talking, just being side by side.<br><br>
+          <em>You became my everything that day.</em>
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- CH 3: GALI OUTING -->
+  <section class="chapter bg-warm" id="ch3">
+    <div class="layout-split">
+      <div class="story-side">
+        <div class="timeline-dot"></div>
+        <span class="ch-label">Chapter III · Late Nights</span>
+        <h2 class="ch-title">The Gali Walks</h2>
+        <div class="divider"></div>
+        <p class="ch-text">
+          Just wandering, just laughing.<br><br>
+          With you ever place felt special the galis where we walk were more meaning and beautiful then any place —<br>
+          just <em>us</em>, every step with you was enough to forget the rest of the world.
+        </p>
+      </div>
+      <div>
+        <div class="photo-frame frame-tall" style="box-shadow:-30px 30px 0 rgba(201,168,76,0.08)">
+          <img src="4.jpeg">
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CH 4: EARLY SELFIES -->
+  <section class="chapter bg-gold-hint" id="ch4">
+    <div class="layout-2col">
+      <div class="photo-frame frame-med">
+        <img src="p1s.jpeg">
+      </div>
+      <div>
+        <div class="photo-frame frame-short" style="margin-bottom:1.5rem">
+          <img src="ps1.jpeg">
+        </div>
+        <div class="story-side" style="margin-top:1.5rem">
+          <div class="timeline-dot"></div>
+          <span class="ch-label">Chapter IV · Us, Just Us</span>
+          <h2 class="ch-title">The Early<br>Selfie Era</h2>
+          <div class="divider"></div>
+          <p class="ch-text">
+            Before every adventure, there was this —<br>
+            two faces, one frame, <em>infinite future</em>.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CH 5: YOUTH CAMP -->
+  <section class="chapter bg-cool" id="ch5">
+    <div class="layout-split" style="direction:rtl">
+      <div style="direction:ltr">
+        <div class="photo-frame frame-med">
+          <img src="5.jpeg">
+        </div>
+      </div>
+      <div class="story-side" style="direction:ltr">
+        <div class="timeline-dot"></div>
+        <span class="ch-label">Chapter V · Community</span>
+        <h2 class="ch-title">The Youth Camp<br>Win</h2>
+        <div class="divider"></div>
+        <p class="ch-text">
+          You shine in a crowd too.<br><br>
+          Watching you celebrate with your team, holding that prize —<br>
+          I was the <em>proudest</em> person in that tent.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- CH 6: DIMA HASAO / HAFLONG TRIP -->
+  <section class="chapter bg-rust-hint" id="ch6">
+    <div style="max-width:1100px;width:100%">
+      <div style="text-align:center;margin-bottom:3rem">
+        <div class="timeline-dot" style="margin:0 auto 1rem"></div>
+        <span class="ch-label">Chapter VI · The Great Escape</span>
+        <h2 class="ch-title" style="font-size:clamp(2rem,4vw,3rem)">Dima Hasao &amp; the Mountains</h2>
+        <div class="divider" style="margin:1rem auto"></div>
+        <p class="ch-text" style="margin:0 auto;text-align:center">
+          "I ❤ DIMA" — and I meant every letter.<br>
+          <em>That sky. Those hills. You beside me.</em>
+        </p>
+      </div>
+      <div class="layout-3col">
+        <div class="photo-frame frame-med dima-main" style="grid-column:1/-1">
+          <img src="6.jpeg">
+        </div>
+        <div class="photo-frame dima-sub">
+          <img src="61.jpeg">
+        </div>
+        <div class="photo-frame dima-sub">
+          <img src="62.jpeg">
+        </div>
+        <div class="photo-frame dima-sub">
+          <img src="62.jpeg">
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CH 7: BIRTHDAYS -->
+  <section class="chapter bg-warm" id="ch7">
+    <div class="layout-split">
+      <div class="story-side bday-text">
+        <div class="timeline-dot"></div>
+        <span class="ch-label">Chapter VII · Celebrations</span>
+        <h2 class="ch-title">Happy birthday to you babe</h2>
+        <p class="ch-subtitle">Also a very happy anniversary</p>
+        <div class="divider"></div>
+        <p class="ch-text">
+          Your birthday was always the most special for me its used to make me feel alive your eyes your smell
+          everything I remembered about everyday that we spend and celebrated.<br><br>
+          The 2nd pic you coming my house we celebration together<br>
+          Your the most special for me and also your the only one who was always there for me <em>My love of my life who
+            has always been there by my side whenever I was in need</em>.
+        </p>
+      </div>
+      <div>
+        <div class="photo-frame frame-short" style="margin-bottom:1.2rem">
+          <img src="7.jpeg">
+        </div>
+        <div class="photo-frame frame-med">
+          <img src="71.jpeg">
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CH 8: COLLEGE + ARCADE -->
+  <section class="chapter bg-gold-hint" id="ch8">
+    <div class="layout-2col">
+      <div>
+        <div class="photo-frame frame-med" style="margin-bottom:1.2rem">
+          <img src="p12s.jpeg">
+        </div>
+      </div>
+      <div class="story-side">
+        <div class="timeline-dot"></div>
+        <span class="ch-label">Chapter VIII · Play Days</span>
+        <h2 class="ch-title">Date to<br>Polo Towers</h2>
+        <div class="divider"></div>
+        <p class="ch-text">
+          You on a bike machine, was the cutest, felt like I saw the beautiful world in full speed.<br><br>
+          These random afternoons just <em>us deciding to be somewhere together</em>.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- CH 9: GIFTS & QUIET MOMENTS -->
+  <section class="chapter bg-cool" id="ch9">
+    <div style="max-width:1100px;width:100%">
+      <div style="text-align:center;margin-bottom:3rem">
+        <div class="timeline-dot" style="margin:0 auto 1rem"></div>
+        <span class="ch-label">Chapter IX · Small Things</span>
+        <h2 class="ch-title" style="font-size:clamp(1.8rem,4vw,3rem)">The Gifts. The Moods. The Real You.</h2>
+        <div class="divider" style="margin:1rem auto"></div>
+      </div>
+      <div class="layout-3col">
+        <div class="photo-frame frame-short">
+          <img src="pg1.jpeg">
+        </div>
+        <div class="photo-frame frame-short">
+          <img src="8.jpeg">
+        </div>
+        <div class="photo-frame frame-short">
+          <img src="p11s.jpeg">
+        </div>
+      </div>
+      <p class="ch-text" style="text-align:center;margin:2rem auto 0">
+        The plushie face. The serious stare. The side-eye I've memorized.<br>
+        <em>Every version of you — I love them all.</em>
+      </p>
+    </div>
+  </section>
+
+  <!-- VIDEO SECTION -->
+  <section class="video-section" id="videoSection">
+    <div class="video-wrapper">
+      <div>
+        <div class="video-title-block">
+          <span class="video-label">The Apology · From My Heart</span>
+          <h2 class="video-heading">Everything I<br>Couldn't Say Out Loud</h2>
+        </div>
+        <div class="video-container">
+          <video id="mainVideo" controls playsinline preload="metadata">
+            <source src="v1s.mp4" type="video/mp4">
+          </video>
+
+        </div>
+        <p
+          style="font-size:0.85rem;color:var(--muted);margin-top:1rem;font-family:'DM Mono',monospace;letter-spacing:0.05em">
+          ♪ Zack Tabudlo — Give Me Your Forever
+        </p>
+      </div>
+      <div>
+        <div class="lyrics-panel" id="lyricsPanel">
+          <h3>Lyrics</h3>
+          <p class="lyrics-artist">Zack Tabudlo · Give Me Your Forever</p>
+          <div id="lyricsContent"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CLOSING -->
+  <section class="closing" id="closing">
+    <span class="ch-label">Always &amp; Only</span>
+    <h2 class="closing-title">I'm Sorry.<br>I Love You.</h2>
+    <div class="closing-heart">♥</div>
+    <p class="closing-text">
+      This is not just an apology. This is a promise.<br>
+      I will never give you a reason to doubt again.<br><br>
+      <em>You are every chapter I want to keep writing.</em>
+    </p>
+    <p class="closing-sig">— Always yours</p>
+  </section>
+
+  <script>
+    // === CURSOR ===
+    const dot = document.getElementById('cursor-dot');
+    const ring = document.getElementById('cursor-ring');
+    let mx = 0, my = 0, rx = 0, ry = 0;
+    document.addEventListener('mousemove', e => {
+      mx = e.clientX; my = e.clientY;
+      dot.style.left = mx + 'px'; dot.style.top = my + 'px';
+    });
+    function animRing() {
+      rx += (mx - rx) * 0.12;
+      ry += (my - ry) * 0.12;
+      ring.style.left = rx + 'px'; ring.style.top = ry + 'px';
+      requestAnimationFrame(animRing);
+    }
+    animRing();
+
+    // === CLICK PETALS ===
+    const petalEmojis = ['🌸', '🌺', '🌹', '💮', '🌷', '✿', '❀'];
+    document.addEventListener('click', e => {
+      for (let i = 0; i < 10; i++) {
+        const p = document.createElement('div');
+        p.className = 'click-petal';
+        p.textContent = petalEmojis[Math.floor(Math.random() * petalEmojis.length)];
+        const angle = (Math.PI * 2 * i / 10) + (Math.random() * 0.5);
+        const dist = 60 + Math.random() * 80;
+        p.style.cssText = `left:${e.clientX}px;top:${e.clientY}px;--tx:${Math.cos(angle) * dist}px;--ty:${Math.sin(angle) * dist}px;`;
+        document.body.appendChild(p);
+        setTimeout(() => p.remove(), 1000);
+      }
+    });
+
+    // === AMBIENT PETALS ===
+    function spawnPetal() {
+      const p = document.createElement('div');
+      p.className = 'petal';
+      p.textContent = petalEmojis[Math.floor(Math.random() * petalEmojis.length)];
+      p.style.left = Math.random() * 100 + 'vw';
+      p.style.top = '-30px';
+      const dur = 6 + Math.random() * 8;
+      p.style.animationDuration = dur + 's';
+      p.style.fontSize = (10 + Math.random() * 12) + 'px';
+      document.body.appendChild(p);
+      setTimeout(() => p.remove(), dur * 1000);
+    }
+    setInterval(spawnPetal, 1200);
+
+    // === SCROLL OBSERVER ===
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(e => {
+        if (e.isIntersecting) e.target.classList.add('visible');
+      });
+    }, { threshold: 0.15 });
+    document.querySelectorAll('.chapter, .video-section, .closing').forEach(el => observer.observe(el));
+
+    // === LYRICS ===
+    const lyrics = [
+      { time: 0, text: "You're not just a lover, you're my best friend" },
+      { time: 5, text: "Someone I can count on 'til the very end" },
+      { time: 10, text: "So why don't you give me your forever" },
+      { time: 15, text: "And I'll give you mine" },
+      { time: 20, text: "We could be together all the time" },
+      { time: 25, text: "Darling give me your forever" },
+      { time: 30, text: "I promise I'll stay" },
+      { time: 35, text: "I swear I won't run away" },
+      { time: 40, text: "Just give me your forever" },
+      { time: 45, text: "I know I've made mistakes" },
+      { time: 50, text: "I know that I've caused you pain" },
+      { time: 55, text: "But I'm here, I'm not going anywhere" },
+      { time: 60, text: "I love you every single day" },
+      { time: 65, text: "You're the reason that I stay" },
+      { time: 70, text: "So won't you give me your forever" },
+      { time: 75, text: "Baby please don't go" },
+      { time: 80, text: "You're the only one I know" },
+      { time: 85, text: "Who makes me feel this way" },
+      { time: 90, text: "I'll love you more each passing day" },
+      { time: 95, text: "Give me your forever" },
+      { time: 100, text: "I'll give you mine" },
+      { time: 105, text: "Forever, forever" },
+      { time: 110, text: "You and I" },
+      { time: 115, text: "Give me your forever..." },
+    ];
+
+    const lyricsContent = document.getElementById('lyricsContent');
+    const lyricsPanel = document.getElementById('lyricsPanel');
+    lyrics.forEach((l, i) => {
+      const div = document.createElement('div');
+      div.className = 'lyric-line';
+      div.id = 'lyric-' + i;
+      div.textContent = l.text;
+      lyricsContent.appendChild(div);
+    });
+
+    const video = document.getElementById('mainVideo');
+    video.addEventListener('timeupdate', () => {
+      const t = video.currentTime;
+      let active = -1;
+      lyrics.forEach((l, i) => {
+        if (t >= l.time) active = i;
+      });
+      document.querySelectorAll('.lyric-line').forEach((el, i) => {
+        if (i === active) {
+          el.classList.add('active');
+          // auto-scroll lyrics
+          const panelTop = lyricsPanel.scrollTop;
+          const panelH = lyricsPanel.clientHeight;
+          const elTop = el.offsetTop;
+          if (elTop < panelTop + 40 || elTop > panelTop + panelH - 60) {
+            lyricsPanel.scrollTo({ top: elTop - panelH / 2, behavior: 'smooth' });
+          }
+        } else {
+          el.classList.remove('active');
+        }
+      });
+    });
+  </script>
+</body>
+
+</html>
